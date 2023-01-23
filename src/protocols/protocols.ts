@@ -9,6 +9,8 @@ export type MovieEntity = {
 
 export type Movie = Omit<MovieEntity, "id">;
 
+export type MovieUpdated = Partial<MovieEntity>;
+
 export type PlatformEntity = {
   id: number,
   name: string

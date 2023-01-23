@@ -1,6 +1,6 @@
 import { QueryResult } from "pg";
 import { connectionDB } from "../database/db.js";
-import { Movie, MovieEntity } from "../protocols/protocols.js";
+import { Movie, MovieEntity, MovieUpdated } from "../protocols/protocols.js";
 
 export async function insertMovie(movie: Movie): Promise<QueryResult<MovieEntity>> {
   return await connectionDB.query(`
@@ -45,14 +45,14 @@ export async function readMovieById(id: number): Promise<QueryResult<MovieEntity
       id = $1;`, [id]);
 };
 
-export async function updateMovie(note: string, status: boolean, id: number) {
+export async function updateMovie(watchedMovie: MovieUpdated, movieId: number) {
   return await connectionDB.query(`
     UPDATE
       movies
     SET
       note = $1, status = $2
     WHERE
-      id = $3;`, [note, status, id]);
+      id = $3;`, [watchedMovie.note, watchedMovie.status, movieId]);
 };
 
 export async function deleteMovieById(id: number) {

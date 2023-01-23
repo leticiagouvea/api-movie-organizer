@@ -17,6 +17,11 @@ const genreSchema = joi.object({
   name: joi.string().required()
 });
 
+const movieUpdatedSchema = joi.object({
+  status: joi.boolean().required(),
+  note: joi.string().required()
+});
+
 export async function validateMovie(req: Request, res: Response, next: NextFunction) {
   const movie = req.body;
 
@@ -58,3 +63,17 @@ export async function validateGenre(req: Request, res: Response, next: NextFunct
   res.locals.genre = genre;
   next();
 };
+
+export async function validateMovieUpdated(req: Request, res: Response, next: NextFunction) {
+  const watchedMovie = req.body;
+
+  const validation = movieUpdatedSchema.validate(req.body, { abortEarly: false });
+
+  if (validation.error) {
+    const error = validation.error.details.map(detail => detail.message);
+    return res.status(422).send(error);
+  }
+
+  res.locals.watchedMovie = watchedMovie;
+  next();
+}

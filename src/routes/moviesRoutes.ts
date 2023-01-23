@@ -1,11 +1,12 @@
 import express from 'express';
-import { validateMovie } from '../middlewares/joiMiddleware.js';
-import { createMovie, getAllMovies } from '../controllers/moviesController.js';
+import { validateMovie, validateMovieUpdated } from '../middlewares/joiMiddleware.js';
+import { createMovie, getAllMovies, movieUpdated } from '../controllers/moviesController.js';
 
 const router = express.Router();
 
 router
   .post('/movies', validateMovie, createMovie)
-  .get('/movies', getAllMovies);
+  .get('/movies', getAllMovies)
+  .put('/movies/update-movie/:movieId', validateMovieUpdated, movieUpdated);
 
 export default router;

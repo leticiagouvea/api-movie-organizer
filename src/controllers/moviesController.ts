@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Movie } from "../protocols/protocols.js";
+import { Movie, MovieUpdated } from "../protocols/protocols.js";
 import { 
   insertMovie,
   readMovieName,
@@ -40,3 +40,28 @@ export async function getAllMovies(req: Request, res: Response) {
     res.status(500).send(error.message);
   }
 }
+
+export async function movieUpdated(req: Request, res: Response) {
+  const { movieId } = req.params;
+  const watchedMovie = res.locals.watchedMovie as MovieUpdated;
+
+  try {
+    const movie = await readMovieById(Number(movieId));
+
+    if (movie.rowCount === 0) {
+      return res.sendStatus(400);
+    }
+
+    const movieUpdate = await updateMovie(watchedMovie, Number(movieId));
+
+    if (movieUpdate.rowCount === 0) {
+      return res.sendStatus(400);
+    }
+
+    res.status(200).send('Movie updated successfully!');
+
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+}
+
