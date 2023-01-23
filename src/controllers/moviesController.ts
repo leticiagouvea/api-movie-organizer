@@ -46,9 +46,9 @@ export async function movieUpdated(req: Request, res: Response) {
   const watchedMovie = res.locals.watchedMovie as MovieUpdated;
 
   try {
-    const movie = await readMovieById(Number(movieId));
+    const movieExists = await readMovieById(Number(movieId));
 
-    if (movie.rowCount === 0) {
+    if (movieExists.rowCount === 0) {
       return res.sendStatus(400);
     }
 
@@ -63,5 +63,27 @@ export async function movieUpdated(req: Request, res: Response) {
   } catch (error) {
     res.status(500).send(error.message);
   }
-}
+};
 
+export async function deleteMovie(req: Request, res: Response) {
+  const { movieId } = req.params;
+
+  try {
+    const movieExists = await readMovieById(Number(movieId));
+
+    if (movieExists.rowCount === 0) {
+      return res.sendStatus(400);
+    }
+
+    const deletedMovie = await deleteMovieById(Number(movieId));
+
+    if (deletedMovie.rowCount === 0) {
+      return res.sendStatus(400);
+    }
+
+    res.status(200).send('Movie deleted successfully!');
+
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
