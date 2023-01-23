@@ -3,7 +3,7 @@ import { connectionDB } from "../database/db.js";
 import { Movie, MovieEntity, MovieUpdated } from "../protocols/protocols.js";
 
 export async function insertMovie(movie: Movie): Promise<QueryResult<MovieEntity>> {
-  return await connectionDB.query(`
+  return connectionDB.query(`
     INSERT INTO
       movies (name, "genreId", "platformId")
     VALUES ($1, $2, $3);
@@ -11,7 +11,7 @@ export async function insertMovie(movie: Movie): Promise<QueryResult<MovieEntity
 };
 
 export async function readMovieName(name: string): Promise<QueryResult<MovieEntity>> {
-  return await connectionDB.query(`
+  return connectionDB.query(`
     SELECT
       *
     FROM
@@ -21,12 +21,12 @@ export async function readMovieName(name: string): Promise<QueryResult<MovieEnti
 };
 
 export async function readAllMovies(): Promise<QueryResult<MovieEntity>> {
-  return await connectionDB.query(`
+  return connectionDB.query(`
     SELECT
       movies.id,
       movies.name,
-      genres.name AS "genre",
-      platforms.name AS "platform",
+      genres.name AS genre,
+      platforms.name AS platform,
       movies.status,
       movies.note
     FROM
@@ -36,7 +36,7 @@ export async function readAllMovies(): Promise<QueryResult<MovieEntity>> {
 };
 
 export async function readMovieById(id: number): Promise<QueryResult<MovieEntity>> {
-  return await connectionDB.query(`
+  return connectionDB.query(`
     SELECT
       *
     FROM
@@ -46,7 +46,7 @@ export async function readMovieById(id: number): Promise<QueryResult<MovieEntity
 };
 
 export async function updateMovie(watchedMovie: MovieUpdated, movieId: number) {
-  return await connectionDB.query(`
+  return connectionDB.query(`
     UPDATE
       movies
     SET
@@ -56,9 +56,23 @@ export async function updateMovie(watchedMovie: MovieUpdated, movieId: number) {
 };
 
 export async function deleteMovieById(id: number) {
-  return await connectionDB.query(`
+  return connectionDB.query(`
     DELETE FROM
       movies
     WHERE
       id = $1;`, [id]);
+};
+
+export async function readQuantityMoviesByGenre(): Promise<QueryResult> {
+  return connectionDB.query(`
+    SELECT
+      genres.id,
+      genres.name AS genre,
+      COUNT(genres.id) AS "movieQuantity"
+    FROM
+      genres
+      JOIN movies ON genres.id = movies."genreId"
+    GROUP BY
+      genres.id
+    ORDER BY "movieQuantity" DESC;`);
 };

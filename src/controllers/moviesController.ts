@@ -6,7 +6,8 @@ import {
   readMovieById,
   readAllMovies,
   updateMovie,
-  deleteMovieById
+  deleteMovieById,
+  readQuantityMoviesByGenre
 } from "../repositories/moviesRepository.js";
 
 
@@ -30,7 +31,6 @@ export async function createMovie(req: Request, res: Response) {
 };
 
 export async function getAllMovies(req: Request, res: Response) {
-  
   try {
     const movies = await readAllMovies();
 
@@ -39,7 +39,7 @@ export async function getAllMovies(req: Request, res: Response) {
   } catch (error) {
     res.status(500).send(error.message);
   }
-}
+};
 
 export async function movieUpdated(req: Request, res: Response) {
   const { movieId } = req.params;
@@ -82,6 +82,17 @@ export async function deleteMovie(req: Request, res: Response) {
     }
 
     res.status(200).send('Movie deleted successfully!');
+
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
+
+export async function getQuantityMoviesByGenre(req: Request, res: Response) {
+  try {
+    const quantityMovies = await readQuantityMoviesByGenre();
+
+    res.status(200).send(quantityMovies.rows);
 
   } catch (error) {
     res.status(500).send(error.message);
