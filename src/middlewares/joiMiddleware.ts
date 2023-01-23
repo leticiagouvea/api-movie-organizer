@@ -1,6 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 import joi from 'joi';
 
+const movieSchema = joi.object({
+  name: joi.string().required(),
+  genreId: joi.number().integer().required(),
+  platformId: joi.number().integer().required(),
+  status: joi.boolean().required(),
+  note: joi.string()
+});
+
 const platformSchema = joi.object({
   name: joi.string().required()
 });
@@ -8,6 +16,20 @@ const platformSchema = joi.object({
 const genreSchema = joi.object({
   name: joi.string().required()
 });
+
+export async function validateMovie(req: Request, res: Response, next: NextFunction) {
+  const movie = req.body;
+
+  const validation = movieSchema.validate(req.body, { abortEarly: false });
+
+  if (validation.error) {
+    const error = validation.error.details.map(detail => detail.message);
+    return res.status(422).send(error);
+  }
+
+  res.locals.movie = movie;
+  next();
+};
 
 export async function validatePlatform(req: Request, res: Response, next: NextFunction) {
   const platform = req.body;

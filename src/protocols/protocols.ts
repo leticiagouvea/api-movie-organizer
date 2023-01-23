@@ -1,3 +1,14 @@
+export type MovieEntity = {
+  id: number,
+  name: string,
+  genreId: number,
+  platformId: number,
+  status: boolean,
+  note?: null | string
+};
+
+export type Movie = Omit<MovieEntity, "id">;
+
 export type PlatformEntity = {
   id: number,
   name: string

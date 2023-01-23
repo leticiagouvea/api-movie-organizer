@@ -7,7 +7,7 @@ export async function insertPlatform(platforms: Platform): Promise<QueryResult<P
     INSERT INTO
       platforms (name)
     VALUES ($1);`, [platforms.name]);
-}
+};
 
 export async function readPlatformName(name: string): Promise<QueryResult<PlatformEntity>> {
   return await connectionDB.query(`
@@ -17,4 +17,4 @@ export async function readPlatformName(name: string): Promise<QueryResult<Platfo
       platforms
     WHERE
       name ILIKE $1;`, [name]);
-}
+};

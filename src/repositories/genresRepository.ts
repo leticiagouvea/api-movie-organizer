@@ -7,7 +7,7 @@ export async function insertGenre(genres: Genre): Promise<QueryResult<GenreEntit
     INSERT INTO
       genres (name)
     VALUES ($1);`, [genres.name]);
-}
+};
 
 export async function readGenreName(name: string): Promise<QueryResult<GenreEntity>> {
   return await connectionDB.query(`
@@ -17,4 +17,4 @@ export async function readGenreName(name: string): Promise<QueryResult<GenreEnti
       genres
     WHERE
       name ILIKE $1;`, [name]);
-}
+};
