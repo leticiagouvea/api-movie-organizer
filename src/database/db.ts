@@ -1,10 +1,6 @@
-import pg from 'pg';
-import { DATABASE_URL } from '../configs/constants.js';
+import pkg from '@prisma/client';
 
-const { Pool } = pg;
+const { PrismaClient } = pkg;
+const prisma = new PrismaClient();
 
-const connectionDB = new Pool ({
-  connectionString: DATABASE_URL
-});
-
-export { connectionDB };
+export default prisma;

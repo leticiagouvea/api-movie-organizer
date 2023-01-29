@@ -1,20 +1,16 @@
-import { QueryResult } from "pg";
-import { connectionDB } from "../database/db.js";
-import { GenreEntity, Genre } from "../protocols/protocols.js";
+import prisma from "../database/db.js";
+import { Genre } from "../protocols/protocols.js";
 
-export async function insertGenre(genres: Genre): Promise<QueryResult<GenreEntity>> {
-  return await connectionDB.query(`
-    INSERT INTO
-      genres (name)
-    VALUES ($1);`, [genres.name]);
+export async function insertGenre(genres: Genre) {
+  const genre = prisma.genres.create({
+    data: genres
+  });
+  return genre;
 };
 
-export async function readGenreName(name: string): Promise<QueryResult<GenreEntity>> {
-  return await connectionDB.query(`
-    SELECT
-      *
-    FROM
-      genres
-    WHERE
-      name ILIKE $1;`, [name]);
+export async function readGenreName(name: string) {
+  const genreName = prisma.genres.findFirst({
+    where: { name }
+  });
+  return genreName;
 };

@@ -8,7 +8,7 @@ export async function createGenre(req: Request, res: Response) {
   try {
     const genreExists = await readGenreName(genre.name);
 
-    if (genreExists.rowCount !== 0) {
+    if (genreExists) {
       return res.status(400).send('This genre already exists');
     }
 

@@ -4,7 +4,6 @@ import { createPlatform } from '../controllers/platformsController.js';
 
 const router = express.Router();
 
-router
-  .post('/platforms', validatePlatform, createPlatform);
+router.post('/platforms', validatePlatform, createPlatform);
 
 export default router;

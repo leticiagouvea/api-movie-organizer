@@ -8,7 +8,7 @@ export async function createPlatform(req: Request, res: Response) {
   try {
     const platformExists = await readPlatformName(platform.name);
 
-    if (platformExists.rowCount !== 0) {
+    if (platformExists) {
       return res.status(400).send('This platform already exists');
     }
 

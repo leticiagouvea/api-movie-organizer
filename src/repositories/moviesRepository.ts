@@ -1,70 +1,52 @@
-import { QueryResult } from "pg";
-import { connectionDB } from "../database/db.js";
-import { Movie, MovieEntity, MovieUpdated } from "../protocols/protocols.js";
+import prisma from "../database/db.js";
+import { Movie, MovieUpdated } from "../protocols/protocols.js";
 
-export async function insertMovie(movie: Movie): Promise<QueryResult<MovieEntity>> {
-  return connectionDB.query(`
-    INSERT INTO
-      movies (name, "genreId", "platformId")
-    VALUES ($1, $2, $3);
-  `, [movie.name, movie.genreId, movie.platformId]);
+export async function insertMovie(movie: Movie) {
+  const createdMovie = prisma.movies.create({
+    data: movie
+  });
+  return createdMovie;
 };
 
-export async function readMovieName(name: string): Promise<QueryResult<MovieEntity>> {
-  return connectionDB.query(`
-    SELECT
-      *
-    FROM
-      movies
-    WHERE
-      name ILIKE $1;`, [name]);
+export async function readMovieName(name: string) {
+  const movieName = prisma.movies.findFirst({
+    where: { name }
+  });
+  return movieName;
 };
 
-export async function readAllMovies(): Promise<QueryResult<MovieEntity>> {
-  return connectionDB.query(`
-    SELECT
-      movies.id,
-      movies.name,
-      genres.name AS genre,
-      platforms.name AS platform,
-      movies.status,
-      movies.note
-    FROM
-      movies
-      JOIN genres ON movies."genreId" = genres.id
-      JOIN platforms ON movies."platformId" = platforms.id;`);
+export async function readAllMovies() {
+  const movies = prisma.movies.findMany();
+  return movies;
 };
 
-export async function readMovieById(id: number): Promise<QueryResult<MovieEntity>> {
-  return connectionDB.query(`
-    SELECT
-      *
-    FROM
-      movies
-    WHERE
-      id = $1;`, [id]);
+export async function readMovieById(id: number) {
+  const movieById = prisma.movies.findFirst({
+    where: { id }
+  });
+  return movieById;
 };
 
 export async function updateMovie(watchedMovie: MovieUpdated, movieId: number) {
-  return connectionDB.query(`
-    UPDATE
-      movies
-    SET
-      note = $1, status = $2
-    WHERE
-      id = $3;`, [watchedMovie.note, watchedMovie.status, movieId]);
+  const updatedMovie = prisma.movies.update({
+    where: { id: movieId },
+    data: {
+      status: watchedMovie.status,
+      note: watchedMovie.note
+    }
+  });
+  return updatedMovie;
 };
 
 export async function deleteMovieById(id: number) {
-  return connectionDB.query(`
-    DELETE FROM
-      movies
-    WHERE
-      id = $1;`, [id]);
+  const deletedMovie = prisma.movies.delete({
+    where: { id }
+  });
+  return deletedMovie;
 };
 
-export async function readQuantityMoviesByGenre(): Promise<QueryResult> {
-  return connectionDB.query(`
+export async function readQuantityMoviesByGenre() {
+  const quantityMovieByGenre = await prisma.$queryRaw`
     SELECT
       genres.id,
       genres.name AS genre,
@@ -74,5 +56,7 @@ export async function readQuantityMoviesByGenre(): Promise<QueryResult> {
       JOIN movies ON genres.id = movies."genreId"
     GROUP BY
       genres.id
-    ORDER BY "movieQuantity" DESC;`);
+    ORDER BY "movieQuantity" DESC;
+  `
+  return JSON.stringify(quantityMovieByGenre, (key, value) => (typeof value === 'bigint' ? value.toString() : value));
 };

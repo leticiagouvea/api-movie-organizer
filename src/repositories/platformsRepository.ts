@@ -1,20 +1,16 @@
-import { QueryResult } from "pg";
-import { connectionDB } from "../database/db.js";
-import { PlatformEntity, Platform } from "../protocols/protocols.js";
+import prisma from "../database/db.js";
+import { Platform } from "../protocols/protocols.js";
 
-export async function insertPlatform(platforms: Platform): Promise<QueryResult<PlatformEntity>> {
-  return await connectionDB.query(`
-    INSERT INTO
-      platforms (name)
-    VALUES ($1);`, [platforms.name]);
+export async function insertPlatform(platforms: Platform) {
+  const platform = prisma.platforms.create({
+   data: platforms
+  });
+  return platform;
 };
 
-export async function readPlatformName(name: string): Promise<QueryResult<PlatformEntity>> {
-  return await connectionDB.query(`
-    SELECT
-      *
-    FROM
-      platforms
-    WHERE
-      name ILIKE $1;`, [name]);
+export async function readPlatformName(name: string) {
+  const platformName = prisma.platforms.findFirst({
+    where: { name }
+  });
+  return platformName;
 };
