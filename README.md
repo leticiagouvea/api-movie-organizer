@@ -119,6 +119,7 @@ Will return the model:
     "name": "Cartoon",
     "_count": {
       "movies": 5
+    }
   }
 ]
 ~~~
