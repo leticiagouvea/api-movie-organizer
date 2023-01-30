@@ -7,6 +7,7 @@ This application helps you to organize a movie list. Add movies by genre and str
 * Node
 * TypeScript
 * PostgreSQL
+* Prisma
 
 ## **Installation:**
 1. Clone this repository.
@@ -83,16 +84,16 @@ Will return the model:
    {
      "id": 1,
      "name": "Matrix",
-     "genre": "Science Fiction",
-     "platform": "Amazon Prime",
+     "genreId": 2,
+     "platformId": 5,
      "status": true,
      "note": "A good movie! Worth watching."
    },
    {
      "id": 2,
      "name": "Titanic",
-     "genre": "Romance",
-     "platform": "Netflix",
+     "genreId": 1,
+     "platformId": 3,
      "status": false,
      "note": null
    }
@@ -106,15 +107,18 @@ Will return the model:
 
 ~~~
 [
-   {
-     "id": 1,
-     "genre": "Comedy",
-     "movieQuantity": "3"
-   },
-   {
-     "id": 2,
-     "genre": "Cartoon",
-     "movieQuantity": "5"
-   }
+  {
+    "id": 1,
+    "name": "Comedy",
+    "_count": {
+      "movies": 3
+    }
+  },
+  {
+    "id": 2,
+    "name": "Cartoon",
+    "_count": {
+      "movies": 5
+  }
 ]
 ~~~
