@@ -40,17 +40,18 @@ export async function deleteMovieById(id: number) {
 };
 
 export async function readQuantityMoviesByGenre() {
-  const quantityMovieByGenre = await prisma.$queryRaw`
-    SELECT
-      genres.id,
-      genres.name AS genre,
-      COUNT(genres.id) AS "movieQuantity"
-    FROM
-      genres
-      JOIN movies ON genres.id = movies."genreId"
-    GROUP BY
-      genres.id
-    ORDER BY "movieQuantity" DESC;
-  `
-  return JSON.stringify(quantityMovieByGenre, (key, value) => (typeof value === 'bigint' ? value.toString() : value));
+  return prisma.genres.findMany({
+    include: {
+      _count: {
+        select: {
+          movies: true
+        }
+      }
+    },
+    orderBy: {
+      movies: {
+        _count: "desc"
+      }
+    }
+  });
 };
