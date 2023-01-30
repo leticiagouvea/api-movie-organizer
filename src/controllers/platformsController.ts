@@ -13,7 +13,6 @@ export async function createPlatform(req: Request, res: Response) {
     }
 
     await insertPlatform(platform);
-
     res.status(201).send('Platform successfully created!')
 
   } catch (error) {

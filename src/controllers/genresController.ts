@@ -13,7 +13,6 @@ export async function createGenre(req: Request, res: Response) {
     }
 
     await insertGenre(genre);
-
     res.status(201).send('Genre successfully created!')
 
   } catch (error) {
